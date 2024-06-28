@@ -1,0 +1,76 @@
+*{
+	padding:0;
+  margin:0;
+}
+body,html{
+  width: 100%;
+  height: 100%;
+}
+
+.el-table{
+    text-align: center;
+    border-radius: 20px;
+    /* 表格字体颜色 */
+    color:white;
+    /* 表格边框颜色 */
+   
+    background-color:transparent;
+    }
+    ::v-deep .el-table tbody tr:hover > td {
+      background-color: transparent;
+  }
+  .el-table__header th, .el-table__header tr {
+    font-size: 20px;
+    color: #fff;
+    }
+    /* 表格内背景颜色 */
+    .el-table th, .el-table tr,.el-table td{
+    border: 0;
+    background-color:transparent;
+    }
+    /* 双数行背景颜色 */
+    .el-table--striped .el-table__body tr.el-table__row--striped td {
+    background-color:#fff;
+    background-color: rgba(148, 144, 144, 0.3)
+    }
+    /* 使表格背景透明 */
+    .el-table th, .el-table tr {
+    background-color: transparent;
+    }
+    /* 删除表格下横线 */
+    .el-table::before {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 0px;
+    }
+    .el-table__row>th{
+      border: none;
+    }
+    .el-table--enable-row-hover .el-table__body tr:hover>td{
+      background-color: #023059 !important;
+      }
+      .el-table--striped .el-table__body tr.el-table__row--striped.current-row td, .el-table__body tr.current-row>td {
+        color: #fff;
+        background-color: #023059!important;
+    }
+
+    .global-bk{
+      background-color: #031838;
+    }
+    .global-bk2{
+      background-color: #053052;
+    }
+    .global-color{
+      color: #fff;
+    }
+    .el-table thead.is-group th{
+      background: transparent;
+    }
+    .el-dialog__header{  
+      background: transparent;
+      color: #fff;
+    }
+    .el-form-item__label {
+      color: #fff;
+    }

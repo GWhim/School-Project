@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ggg.bs.mapper.DemandItemMapper">
+  <resultMap id="DemandBaseResultMap" type="com.ggg.bs.model.DemandItem">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="version_id" jdbcType="VARCHAR" property="versionId" />
+    <result column="createuser_id" jdbcType="VARCHAR" property="createuserId" />
+
+  </resultMap>
+  <select id="getDemandItemBydemandId" resultType="java.util.Map">
+    select demand_item.id,demand_item.version_id vId,(select version.name from version where version.id=demand_item.version_id)vName,(SELECT user.`name` from user where user.id=demand_item.createuser_id)    createuser ,demand_item.createtime,demand_item.status,
+(SELECT user.`name` from user where user.id=demand_item.enduser_id)enduser,
+demand_item.endtime,demand_item.des,demand_item.title
+     from demand_item where demand_item.demand_id=#{demandId}
+  </select>
+    <insert id="insertDemandItem" >
+        insert into db_bs.demand_item(id,version_id,createuser_id,createtime,status,enduser_id,endtime,des,demand_id,title)
+        values (REPLACE(UUID(), '-', ''),#{vId},#{uId},now(),1,'',null,#{textarea},#{demandId},#{xqtmtitle})
+    </insert>
+    <update id="updateDemandItemStatus">
+        update db_bs.demand_item set demand_item.status=#{status}
+        <if test="userId!=null">
+            ,demand_item.enduser_id=#{userId}
+            ,demand_item.endtime=now()
+        </if>
+        where demand_item.id=#{demandItemId}
+    </update>
+
+
+
+
+</mapper>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ggg.bs.mapper.BugMapper">
+  <resultMap id="BugBaseResultMap" type="com.ggg.bs.model.Bug">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="version_id" jdbcType="VARCHAR" property="versionId" />
+    <result column="creatuser" jdbcType="VARCHAR" property="creatuser" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="bug_id" jdbcType="VARCHAR" property="bugId" />
+      <result column="des" jdbcType="VARCHAR" property="des" />
+  </resultMap>
+  <select id="getBugNumByUserId" resultType="int">
+    select COUNT(user_id) from db_bs.bug,version WHERE bug_id is null and db_bs.bug.status=0 and db_bs.bug.user_id= #{userId}
+    and version.id=db_bs.bug.version_id and version.`status`=1
+     </select>
+  <select id="getDoneNumByUserId" resultType="int">
+    select COUNT(user_id) from db_bs.bug,version
+     WHERE bug_id is null and db_bs.bug.status=1 and db_bs.bug.user_id= #{userId} and TO_DAYS(db_bs.bug.endtime) = TO_DAYS(now())
+      and version.id=db_bs.bug.version_id and version.`status`=1
+    </select>
+  <insert id="addbugbyzj" parameterType="com.ggg.bs.model.Bug">
+      insert into db_bs.bug(id, version_id, creatuser, createtime, status, user_id,des)
+      values
+      (#{bug.bugId},#{bug.versionId},#{loginUserId},now(),'0',#{toUserId},#{bug.des})
+  </insert>
+    <select id="selectbugbyId" resultMap="BugBaseResultMap">
+        select * from bug where bug.id=#{id}
+    </select>
+    <select id="getAllBugByUser" resultType="java.util.Map">
+        SELECT
+        w1.id,
+        (SELECT db_bs.user.name from db_bs.user where db_bs.user.id=w1.user_id) username,
+        (select db_bs.project.name from db_bs.version,project where db_bs.version.id=w1.version_id and db_bs.project.id=db_bs.version.project_id) pname,
+        (select db_bs.version.name from db_bs.version where db_bs.version.id=w1.version_id) vname,
+        w1.version_id vId,
+        (select db_bs.user.name from db_bs.user where db_bs.user.id=w1.creatuser) createusername,
+        (select db_bs.user.name from db_bs.user where db_bs.user.id=w1.enduser) endusername,
+        w1.des,
+        (SELECT version.`status` from version where version.id=w1.version_id) versionstatus,
+        CASE
+        WHEN w1.status = '0' THEN
+        1
+        WHEN w1.status = '1' THEN
+        2
+        WHEN w1.status = '2' THEN
+        3
+        WHEN w1.status = '3' THEN
+        4
+        END Gstatus,
+        w1.status,
+        w1.createtime,
+        w1.endtime,
+        w1.user_id userid
+        FROM
+        db_bs.bug w1
+        WHERE
+        <if test="userId!=null">
+            w1.user_id = #{userId} and
+        </if>
+        <if test="starttime!=null and endtime!=null and starttime!='' and endtime!=''">
+            w1.createtime BETWEEN #{starttime} and #{endtime}  and
+        </if>
+        <if test="pId!=null and pId!=''">
+            w1.version_id in (select version.id from version where version.project_id=#{pId} ) and
+        </if>
+        <if test="vId!=null and vId!=''">
+            w1.version_id=#{vId} and
+        </if>
+        '1'='1'
+        order by Gstatus,w1.createtime
+    </select>
+    <insert id="addBug">
+        insert into  db_bs.bug(id, version_id, user_id, creatuser, des, status, createtime)
+        values (REPLACE(UUID(), '-', ''),#{vId},#{userId},#{createUserId},#{des},0,now())
+    </insert>
+    <update id="updateBugStauts">
+        update bug
+        <if test="status==1||status==3">
+            set status=#{status},endtime=now(),enduser=#{userId} where id=#{bugId}
+        </if>
+        <if test="status==2">
+            set enduser=#{userId},endtime=now(),status=#{status},bug_id=REPLACE(UUID(), '-', '') where id=#{bugId}
+        </if>
+    </update>
+</mapper>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ggg.bs.mapper.TeamMapper">
+  <resultMap id="TeamBaseResultMap" type="com.ggg.bs.model.Team">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="version_id" jdbcType="VARCHAR" property="versionId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="createuser_id" jdbcType="VARCHAR" property="createuserId" />
+    <result column="des" jdbcType="VARCHAR" property="des" />
+    <result column="work_id" jdbcType="VARCHAR" property="workId" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+    <select id="selectOneByUV" resultType="int">
+    select count(id) from team where team.user_id= #{userId} and team.version_id= #{versionId}
+    </select>
+  <select id="getCyglTable" resultType="java.util.Map">
+      SELECT
+      u1.id,
+      u1.NAME name,
+      CASE
+      WHEN u1.identity = '1' THEN
+      '项目经理'
+      WHEN u1.identity = '2' THEN
+      '需求'
+      WHEN u1.identity = '3' THEN
+      '开发'
+      WHEN u1.identity = '4' THEN
+      '测试' ELSE 'GGG'
+      END identity,
+      (
+      SELECT
+      COUNT( user_id )
+      FROM
+      db_bs.bug
+      WHERE
+      bug_id IS NULL
+      AND db_bs.bug.user_id = u1.id
+      AND v1.id = db_bs.bug.version_id
+      AND db_bs.bug.`status`&lt;&gt;3
+      AND db_bs.bug.`status`&lt;&gt;2
+      ) bugnum,
+      (
+      SELECT
+      COUNT( user_id )
+      FROM
+      db_bs.bug
+      WHERE
+      bug_id IS NULL
+      AND db_bs.bug.STATUS = 1
+      AND db_bs.bug.user_id = u1.id
+      AND v1.id = db_bs.bug.version_id
+      ) donebugnum,
+      (
+      SELECT
+      COUNT( user_id )
+      FROM
+      db_bs.WORK
+      WHERE
+      db_bs.WORK.user_id = u1.id
+      AND v1.id = db_bs.WORK.version_id
+      AND db_bs.WORK.`status`&lt;&gt;'0'
+      AND db_bs.WORK.`status`&lt;&gt;'3'
+      ) worknum,
+      (
+      SELECT
+      COUNT( user_id )
+      FROM
+      db_bs.WORK
+      WHERE
+      db_bs.`work`.STATUS = '2'
+      AND db_bs.WORK.user_id = u1.id
+      AND v1.id = db_bs.WORK.version_id
+      ) doneworknum
+      FROM
+      USER u1,
+      team t1,
+      version v1
+      WHERE
+      t1.version_id = #{versionId}
+      AND u1.id = t1.user_id
+      AND v1.id = t1.version_id
+      AND v1.`status` = 1
+      AND t1.sfyx=1
+
+
+ </select>
+    <insert id="addUser" parameterType="java.util.List">
+        insert into team(id,version_id,user_id,sfyx)
+        values
+        <foreach collection="list" item="item" separator="," >
+             (REPLACE(UUID(), '-', ''),#{versionId},#{item.id},1)
+        </foreach>
+    </insert>
+    <update id="updateTeamUserSfyx" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            UPDATE team
+            <set>
+                team.sfyx=#{sfyx}
+            </set>
+              where team.version_id=#{versionId} and team.user_id=#{item.id}
+        </foreach>
+    </update>
+    <select id="selectTeamByPid" resultType="java.util.Map">
+       select
+       team.id,
+       (select user.name from user where user.id=team.user_id ) name,
+        (select CASE
+      WHEN user.identity = '1' THEN
+      '项目经理'
+      WHEN user.identity = '2' THEN
+      '需求'
+      WHEN user.identity = '3' THEN
+      '开发'
+      WHEN user.identity = '4' THEN
+      '测试' ELSE 'GGG'
+      END identity from user where user.id=team.user_id ) identity
+       from team
+			 where team.sfyx=1 and team.version_id in
+			 (select version.id from version WHERE version.project_id=#{pId} and version.`status`=1)
+    </select>
+    <select id="selectTeamByUV" resultType="java.util.Map">
+        SELECT	team.user_id id,(select user.`name`from user where user.id=team.user_id) username
+        from team
+        where
+        team.version_id=#{vId}
+        and team.user_id<![CDATA[ <> ]]>#{userId}
+        and team.sfyx=1
+    </select>
+</mapper>

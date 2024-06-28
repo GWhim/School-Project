@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ggg.bs.mapper.CzjlMapper">
+  <resultMap id="CzjlBaseResultMap" type="com.ggg.bs.model.Czjl">
+      <result column="id" jdbcType="VARCHAR" property="id" />
+      <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="des" jdbcType="VARCHAR" property="des" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+  </resultMap>
+
+    <select id="getCzjlByUserId" resultMap="CzjlBaseResultMap">
+  select db_bs.czjl.username,db_bs.czjl.createtime,db_bs.czjl.des from db_bs.czjl
+      <where>
+          user_id in (SELECT distinct team.user_id from team where team.version_id in(select t2.version_id from team t2 WHERE t2.user_id=#{userId}and t2.sfyx=1))
+          <if test="type ==1">
+              and   TO_DAYS(db_bs.czjl.createtime) = TO_DAYS(now())
+          </if>
+          <if test="type ==2">
+              and YEARWEEK(db_bs.czjl.createtime) = YEARWEEK(NOW())
+          </if>
+      </where>
+  ORDER BY  createtime desc
+ </select>
+    <insert id="insertCzjl" parameterType="java.util.List">
+        insert into czjl(id,user_id,username,des,createtime)
+        values
+        <foreach collection="list" item="item" index="index" open="" close="" separator=",">
+            (REPLACE(UUID(), '-', ''),#{userId},(SELECT `user`.`name`from`user`where user.id=#{userId}),#{item.des},now() )
+        </foreach>
+    </insert>
+</mapper>

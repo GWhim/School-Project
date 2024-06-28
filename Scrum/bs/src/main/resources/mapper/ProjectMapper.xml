@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ggg.bs.mapper.ProjectMapper">
+  <resultMap id="ProjectBaseResultMap" type="com.ggg.bs.model.Project">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="dec" jdbcType="VARCHAR" property="dec" />
+    <result column="createuser_id" jdbcType="VARCHAR" property="createuserId" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="enduser_id" jdbcType="VARCHAR" property="enduserId" />
+    <result column="endtime" jdbcType="TIMESTAMP" property="endtime" />
+  </resultMap>
+
+  <select id="kbProject" resultType="java.util.Map">
+	select project.`name` projectname ,v1.`name` versionname
+,(select  COUNT(user_id)from db_bs.work where db_bs.`work`.status='1'and db_bs.`work`.user_id=#{userId} and v1.id=db_bs.`work`.version_id) worknum
+,(select  COUNT(user_id)from db_bs.work where db_bs.`work`.status='2'and db_bs.`work`.user_id=#{userId} and v1.id=db_bs.`work`.version_id) doneworknum
+,(select COUNT(user_id) from db_bs.bug WHERE bug_id is null and db_bs.bug.status=0 and db_bs.bug.user_id= #{userId} and v1.id=db_bs.bug.version_id) bugnum
+,(select COUNT(user_id) from db_bs.bug WHERE bug_id is null and db_bs.bug.status=1 and db_bs.bug.user_id= #{userId} and v1.id=db_bs.bug.version_id) donebugnum
+	 from project,version v1
+	where
+	v1.id in  (SELECT distinct team.version_id from team where team.user_id=#{userId} and team.sfyx=1)
+	and v1.project_id=project.id
+	 and v1.`status`=1
+
+  </select>
+    <select id="xmglData" resultType="java.util.Map">
+	select project.id,project.dec,project.`name`,project.createtime,
+ CASE
+      WHEN project.enduser_id is null THEN 1
+      ELSE 0
+      END type,
+    (select user.`name`from user where user.id=project.createuser_id) as creatusername ,
+    (select count(version.id) FROM version where version.project_id=project.id) as versionnum,
+    (select version.`name` FROM version where version.project_id=project.id and version.`status`=1) as versionname,
+    (select count(DISTINCT team.user_id) FROM team where team.version_id in (select version.id from version where version.project_id=project.id ) ) as allusernum,
+    (select count(t2.id) FROM team t2 where t2.version_id in (select v2.id from version v2 where v2.project_id=project.id and v2.STATUS=1)  and t2.sfyx=1) as usernum
+from project
+where (
+project.createuser_id =#{userId} or project.id in
+( SELECT DISTINCT
+version.project_id
+	FROM
+		version,team
+	WHERE
+		version.id=team.version_id and team.user_id=#{userId} )
+		)
+
+  </select>
+    <insert id="addProject">
+        insert into project(project.id,project.name,project.dec,project.createuser_id,project.createtime)
+        values (#{pId},#{pName},#{dec},#{userId},now())
+    </insert>
+<update id="closeP">
+    update project set project.enduser_id=#{userId} ,project.endtime=now() where  project.id=#{pId}
+</update>
+    <select id="selectProjectById" resultMap="ProjectBaseResultMap">
+        select * from project where project.id=#{pId}
+    </select>
+    <select id="selectProjectByUser" resultType="java.util.Map">
+	 SELECT	project.id ,project.name from project where
+     project.createuser_id =#{userId} or project.id in
+    ( SELECT version.project_id FROM version WHERE version.id in ( SELECT team.version_id FROM team WHERE
+     team.user_id=#{userId}))
+  </select>
+</mapper>
