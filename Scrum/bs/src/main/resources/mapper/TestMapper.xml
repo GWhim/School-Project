@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ggg.bs.mapper.TestMapper">
+  <resultMap id="TestBaseResultMap" type="com.ggg.bs.model.Test">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="file_id" jdbcType="VARCHAR" property="fileId" />
+    <result column="version_id" jdbcType="VARCHAR" property="versionId" />
+
+  </resultMap>
+  <select id="getTestByUV" resultMap="TestBaseResultMap">
+    select * from db_bs.test where db_bs.test.version_id=#{vId}
+  </select>
+    <insert id="insertTest" >
+        insert into db_bs.test(id,file_id,version_id)
+        values (REPLACE(UUID(), '-', ''),#{fId},#{vId})
+    </insert>
+
+
+
+
+</mapper>

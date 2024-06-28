@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ggg.bs.mapper.TestItemMapper">
+  <resultMap id="TestItemBaseResultMap" type="com.ggg.bs.model.TestItem">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="version_id" jdbcType="VARCHAR" property="versionId" />
+    <result column="createuser_id" jdbcType="VARCHAR" property="createuserId" />
+
+  </resultMap>
+  <select id="getTestItemByTestId" resultType="java.util.Map">
+    select test_item.id,test_item.version_id vId,(select version.name from version where version.id=test_item.version_id)vName,(SELECT user.`name` from user where user.id=test_item.createuser_id)    createuser ,test_item.createtime,test_item.status,
+(SELECT user.`name` from user where user.id=test_item.enduser_id)enduser,
+test_item.endtime,test_item.des,test_item.title
+     from test_item where test_item.test_id=#{testId}
+  </select>
+    <insert id="insertTestItem" >
+        insert into db_bs.test_item(id,version_id,createuser_id,createtime,status,enduser_id,endtime,des,test_id,title)
+        values (REPLACE(UUID(), '-', ''),#{vId},#{uId},now(),1,'',null,#{textarea},#{testId},#{cstmtitle})
+    </insert>
+    <update id="updateTestItemStatus">
+        update db_bs.test_item set test_item.status=#{status}
+        <if test="userId!=null">
+            ,test_item.enduser_id=#{userId}
+            ,test_item.endtime=now()
+        </if>
+        where test_item.id=#{testItemId}
+    </update>
+
+
+
+
+</mapper>

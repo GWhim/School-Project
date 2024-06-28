@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ggg.bs.mapper.VersionMapper">
+  <resultMap id="VersionBaseResultMap" type="com.ggg.bs.model.Version">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="project_id" jdbcType="VARCHAR" property="projectId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="creatuser_id" jdbcType="VARCHAR" property="creatuserId" />
+    <result column="enduser_id" jdbcType="VARCHAR" property="enduserId" />
+    <result column="endtime" jdbcType="VARCHAR" property="endtime" />
+  </resultMap>
+  <select id="getVersionNumByUserId" resultType="int">
+  select COUNT(user_id) from db_bs.`team`
+  where db_bs.`team`.version_id in(SELECT db_bs.`version`.id from db_bs.`version` WHERE `status`=1)  and db_bs.`team`.user_id=#{userId} and team.sfyx=1
+     </select>
+    <select id="getVersionById" resultMap="VersionBaseResultMap">
+    select * from db_bs.version where id=#{id}
+     </select>
+  <select id="getVersionByUserId" resultType="java.util.Map">
+	SELECT
+	version.id,
+		CONCAT(project.`name`,' - ',version.`name`) versionname
+FROM
+	version,
+	project
+WHERE
+	project.id = version.project_id
+	AND version.id IN (
+	SELECT
+		team.version_id
+	FROM
+		team
+WHERE
+	user_id = #{userid} and team.sfyx=1)
+    and version.status=1
+    and project.enduser_id is  null
+</select>
+    <insert id="addVersion">
+        insert into version(version.id,version.project_id,version.name,version.status,version.createtime,version.creatuser_id)
+        values (#{vId},#{pId},#{vName},'1',now(),#{userId})
+    </insert>
+
+    <select id="getVersionByPId" resultType="java.util.Map">
+    select version.id,version.name,version.createtime,
+    (select db_bs.user.name from  db_bs.user where db_bs.user.id= version.creatuser_id ) createName,
+    version.status,
+			FORMAT((select COUNT(work.id) FROM `work` WHERE `work`.version_id =version.id and work.`status`='2')/(select COUNT(work.id) FROM `work` WHERE `work`.version_id =version.id and (work.`status`='1' or work.`status`='2'))*100,2) worknum
+    from db_bs.version where version.project_id=#{pId}
+    ORDER BY status desc ,createtime
+     </select>
+    <update id="updateVersionStatus">
+    update version
+    set version.status=2 ,version.enduser_id=#{userId},version.endtime=now()
+    where version.project_id=#{pId} and version.status=1
+     </update>
+    <update id="closeVersionStatus">
+    update version
+    set version.status=0 ,version.enduser_id=#{userId},version.endtime=now()
+    where version.project_id=#{pId} and version.status=1
+     </update>
+
+
+</mapper>

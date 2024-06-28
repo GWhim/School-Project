@@ -1,0 +1,23 @@
+
+mybatis:
+    type-aliases-package: com.ggg.bs.model
+    mapper-locations: classpath*:mapper/*Mapper.xml
+server:
+    port: 8888
+spring:
+    jackson:
+        date-format: yyyy-MM-dd HH:mm:ss
+    datasource:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/db_bs?serverTimezone=UTC&characterEncoding=UTF-8&allowMultiQueries=true
+        username: root
+        password: Gaoweihan726
+        bySearch:
+            testWhileIdle: true
+            validationQuery: SELECT 1
+            timeBestweenEvictionRunsMillis: 3600000 #每个小时确认连接是否可用
+    servlet:
+         multipart:
+             max-file-size: 10MB
+             max-request-size: 10MB
+

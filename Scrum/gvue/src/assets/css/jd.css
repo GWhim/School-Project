@@ -1,0 +1,114 @@
+
+#jd{
+  font-family: "微软雅黑";  /*  设置字体 */
+  margin: 0px auto ;/* 去除上下的边距*/
+  width:100%;
+  height:100%;
+  background-color: #021C33;
+  color: #fff;
+}
+.jd-tab{
+  background-color: transparent;
+  
+}
+.el-tabs__item {
+background-color: transparent;
+}
+.jd-center{
+  padding-left: 50px;
+  padding-top: 30px;
+  margin-left: 50px;
+  margin-top: 30px;
+  height: 55% ;
+  width: 93%;
+  background-color: #042F52;
+}
+.jd-top{
+  padding-left: 50px;
+  padding-top: 35px;
+  height: 15%;
+}
+.jd-top-top{
+  padding-left: 50px;
+  padding-top: 35px;
+  height: 100%;
+  width: 96%;
+  background-color: #042F52;
+}
+.jd-top-center{
+  margin-left: 50px;
+  margin-top: 30px;
+  padding-left: 50px;
+  padding-top: 30px;
+  height: 20%;
+  width: 93%;
+  background-color: #053052;
+}
+.jd-btn{
+  background: url(../img/btn.png) center no-repeat;
+  /* padding-left: 45px; */
+  background-size:100px 50px;
+  /* padding-right: 45px; */
+  position: absolute;
+  width: 100px;
+  margin-left: 30px;
+}
+.jd-btn2{
+  background: url(../img/btn.png) center no-repeat;
+  /* padding-left: 45px; */
+  background-size:100px 50px;
+  /* padding-right: 45px; */
+  position: absolute;
+  left: 120px;
+  width: 100px;
+}
+.a{
+  background: url(../img/btn2.png) center no-repeat;
+  background-size:90px 45px;
+}
+.jd-addRw{
+  position: absolute;
+  right: 70px;
+}
+.addrw-item{
+  width: 300px;
+  margin-right: 100px;
+}
+.jd-main-text{
+  text-align: center;
+  height: 100%;
+  padding-top: 30px;
+}
+.jd-main{
+  height: 100%;
+  padding-left: 100px;
+  
+}
+.next{
+  top: 50px;
+  left: 150px;
+  position: absolute;
+}
+.progress-item{
+  height: 100%;
+  width: 200px;
+}
+.progress-item2{
+  height: 80%;
+  position: relative;
+}
+.progress-text{
+  width: 130px;
+  text-align: center;
+  line-height: 24px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.progress-text:hover {
+  overflow: visible;
+  white-space: inherit;
+  color: #0093FF;
+  cursor:pointer ;
+}
+

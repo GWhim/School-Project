@@ -1,0 +1,59 @@
+
+#xmgl{
+  font-family: "微软雅黑";  /*  设置字体 */
+  margin: 0px auto ;/* 去除上下的边距*/
+  width:100%;
+  height:100%;
+  background-color: #021C33;
+  color: #fff;
+}
+.top-bg{
+  background-color: #053052;
+  height: 100%;
+}
+.xmgl-top{
+  height: 90%;
+  padding-left: 50px;
+  padding-top: 30px;
+  color: #fff;
+}
+.xm-title{
+  font-size: 25px;
+  margin-top: 30px;
+  padding-left: 20px
+}
+.addXm{
+  float: right;
+  margin-top: 20px;
+  padding-top: 20px
+}
+.xmgl-table-col{
+  padding-top: 10px;
+  padding-left: 0px;
+}
+.xmgl-table{
+  width: 100% ;
+  border: 3px solid #2494F6;
+  margin-top: 25px;
+  
+}
+.xmgl-detil-table{
+  width:100% ;
+  border: 3px solid #2494F6;
+  margin-top: 15px;
+  margin-left: 100px;
+}
+.xmgl-vWork-table{
+  width:88% ;
+  border: 3px solid #2494F6;
+  margin-top: 15px;
+  margin-left: 100px;
+}
+.xmgl-detil-table-right{
+  margin-left: 150px;
+}
+.xmgl-detil-table-user{
+  width:100% ;
+  border: 3px solid #2494F6;
+  margin-top: 15px;
+}

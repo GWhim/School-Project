@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ggg.bs.mapper.WorkMapper">
+  <resultMap id="WorkBaseResultMap" type="com.ggg.bs.model.Work">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="version_id" jdbcType="VARCHAR" property="versionId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="createuser_id" jdbcType="VARCHAR" property="createuserId" />
+    <result column="des" jdbcType="VARCHAR" property="des" />
+    <result column="work_id" jdbcType="VARCHAR" property="workId" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <select id="getWorkNumByUserId" resultType="int">
+ select COUNT(user_id) from db_bs.work,db_bs.version where db_bs.`work`.status='1' and db_bs.`work`.user_id= #{userId}
+ and db_bs.version.id=db_bs.`work`.version_id and  db_bs.version.`status`=1
+ </select>
+  <select id="getDoneWorkNumByUserId" resultType="int">
+ select COUNT(user_id) from db_bs.work,db_bs.version where db_bs.`work`.status='2' and db_bs.`work`.user_id= #{userId} and TO_DAYS(db_bs.work.endtime) = TO_DAYS(now())
+  and db_bs.version.id=db_bs.`work`.version_id and  db_bs.version.`status`=1
+     </select>
+    <select id="getDoingWorkByUV" resultType="java.util.Map">
+     SELECT
+        w1.id,
+        w1.des,
+        1 AS 'type'
+    FROM
+        db_bs.WORK w1
+    WHERE
+        w1.user_id = #{userId}
+        AND w1.version_id = #{versionId}
+        AND w1.STATUS = 1 UNION ALL
+    SELECT
+        b1.id,
+        b1.des,
+        2 AS 'type'
+    FROM
+        db_bs.bug b1
+    WHERE
+        b1.user_id = #{userId}
+        AND b1.version_id = #{versionId}
+        AND b1.STATUS = 0
+     </select>
+    <update id="zjDoing" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            <if test="item.type ==1">
+                update work set enduser_id=#{loginUserId},endtime=now(),status='3',work_id=REPLACE(UUID(), '-', '') where id=#{item.id}
+            </if>
+            <if test="item.type ==2">
+                update bug set enduser=#{loginUserId} ,endtime=now(),status='2',bug_id=REPLACE(UUID(), '-', '') where id=#{item.id}
+            </if>
+        </foreach>
+    </update>
+    <insert id="addworkbyzj" parameterType="com.ggg.bs.model.Work">
+        insert into db_bs.WORK(id, version_id, user_id, createuser_id, des, status, createtime)
+        values(#{work.workId},#{work.versionId},#{toUserId},#{loginUserId},#{work.des},'1',now())
+    </insert>
+    <select id="toNewVersion" resultType="java.util.Map">
+        SELECT (SELECT user.name from user where user.id=work.user_id) name,
+         (SELECT user.name from user where user.id=`work`.createuser_id) createname,
+         `work`.des,`work`.createtime,1 as type
+        FROM `work`
+         WHERE work.version_id=(select  version.id
+        from version
+        where version.project_id =#{pId} and version.`status`=1)
+        and `work`.`status`=1 UNION ALL
+         SELECT (SELECT user.name from user where user.id=bug.user_id) name,
+        	 (SELECT user.name from user where user.id=`bug`.creatuser) createname,
+        	 `bug`.des,`bug`.createtime,2 as type
+        FROM `bug`
+         WHERE bug.version_id=(select  version.id
+        from version
+        where version.project_id =#{pId} and version.`status`=1)
+        and `bug`.`status`=0
+    </select>
+    <select id="getAllWorkByUser" resultType="java.util.Map">
+    SELECT
+    w1.id,
+    (SELECT db_bs.user.name from db_bs.user where db_bs.user.id=w1.user_id) username,
+    (select db_bs.project.name from db_bs.version,project where db_bs.version.id=w1.version_id and db_bs.project.id=db_bs.version.project_id) pname,
+    (select db_bs.version.name from db_bs.version where db_bs.version.id=w1.version_id) vname,
+    w1.version_id vId,
+    (select db_bs.user.name from db_bs.user where db_bs.user.id=w1.createuser_id) createusername,
+    (select db_bs.user.name from db_bs.user where db_bs.user.id=w1.enduser_id) endusername,
+    w1.des,
+    (SELECT version.`status` from version where version.id=w1.version_id) versionstatus,
+    CASE
+      WHEN w1.status = '0' THEN
+      4
+      WHEN w1.status = '1' THEN
+      1
+      WHEN w1.status = '2' THEN
+      2
+      WHEN w1.status = '3' THEN
+      3
+      END Gstatus,
+    w1.status,
+    w1.createtime,
+    w1.endtime,
+    w1.user_id userid
+    FROM
+    db_bs.WORK w1
+    WHERE
+    <if test="userId!=null">
+    w1.user_id = #{userId} and
+    </if>
+    <if test="starttime!=null and endtime!=null and starttime!='' and endtime!=''">
+        w1.createtime BETWEEN #{starttime} and #{endtime}  and
+    </if>
+    <if test="pId!=null and pId!=''">
+        w1.version_id in (select version.id from version where version.project_id=#{pId} ) and
+    </if>
+    <if test="vId!=null and vId!=''">
+         w1.version_id=#{vId} and
+    </if>
+    '1'='1'
+    order by Gstatus,w1.createtime
+    </select>
+    <insert id="addWork">
+        insert into  db_bs.WORK(id, version_id, user_id, createuser_id, des, status, createtime)
+        values (REPLACE(UUID(), '-', ''),#{vId},#{userId},#{createUserId},#{des},1,now())
+    </insert>
+    <update id="updateWorkStauts">
+          update work
+              <if test="status==2||status==0">
+               set status=#{status},endtime=now(),enduser_id=#{userId} where id=#{workId}
+              </if>
+            <if test="status==3">
+                set enduser_id=#{userId},endtime=now(),status=#{status},work_id=REPLACE(UUID(), '-', '') where id=#{workId}
+            </if>
+    </update>
+    <select id="selectworkbyId" resultMap="WorkBaseResultMap">
+        select * from work where work.id=#{id}
+    </select>
+
+</mapper>
