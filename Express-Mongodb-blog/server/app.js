@@ -1,3 +1,4 @@
+require('dotenv').config();
 //服务器端入口
 
 //模块加载
@@ -50,7 +51,7 @@ app.use('/admin', require('./routers/admin'));
 app.use('/api', require('./routers/api'));
 
 //mongodb数据库连接
-mongoose.connect('mongodb://localhost:27017/blog', function (err) {
+mongoose.connect(process.env.MONGODB_URL, function (err) {
     if (err) {
         console.log('数据库连接失败');
     } else {
