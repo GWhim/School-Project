@@ -12,16 +12,16 @@
       <result column="des" jdbcType="VARCHAR" property="des" />
   </resultMap>
   <select id="getBugNumByUserId" resultType="int">
-    select COUNT(user_id) from db_bs.bug,version WHERE bug_id is null and db_bs.bug.status=0 and db_bs.bug.user_id= #{userId}
-    and version.id=db_bs.bug.version_id and version.`status`=1
+    select COUNT(user_id) from scrum.bug,version WHERE bug_id is null and scrum.bug.status=0 and scrum.bug.user_id= #{userId}
+    and version.id=scrum.bug.version_id and version.`status`=1
      </select>
   <select id="getDoneNumByUserId" resultType="int">
-    select COUNT(user_id) from db_bs.bug,version
-     WHERE bug_id is null and db_bs.bug.status=1 and db_bs.bug.user_id= #{userId} and TO_DAYS(db_bs.bug.endtime) = TO_DAYS(now())
-      and version.id=db_bs.bug.version_id and version.`status`=1
+    select COUNT(user_id) from scrum.bug,version
+     WHERE bug_id is null and scrum.bug.status=1 and scrum.bug.user_id= #{userId} and TO_DAYS(scrum.bug.endtime) = TO_DAYS(now())
+      and version.id=scrum.bug.version_id and version.`status`=1
     </select>
   <insert id="addbugbyzj" parameterType="com.ggg.bs.model.Bug">
-      insert into db_bs.bug(id, version_id, creatuser, createtime, status, user_id,des)
+      insert into scrum.bug(id, version_id, creatuser, createtime, status, user_id,des)
       values
       (#{bug.bugId},#{bug.versionId},#{loginUserId},now(),'0',#{toUserId},#{bug.des})
   </insert>
@@ -31,12 +31,12 @@
     <select id="getAllBugByUser" resultType="java.util.Map">
         SELECT
         w1.id,
-        (SELECT db_bs.user.name from db_bs.user where db_bs.user.id=w1.user_id) username,
-        (select db_bs.project.name from db_bs.version,project where db_bs.version.id=w1.version_id and db_bs.project.id=db_bs.version.project_id) pname,
-        (select db_bs.version.name from db_bs.version where db_bs.version.id=w1.version_id) vname,
+        (SELECT scrum.user.name from scrum.user where scrum.user.id=w1.user_id) username,
+        (select scrum.project.name from scrum.version,project where scrum.version.id=w1.version_id and scrum.project.id=scrum.version.project_id) pname,
+        (select scrum.version.name from scrum.version where scrum.version.id=w1.version_id) vname,
         w1.version_id vId,
-        (select db_bs.user.name from db_bs.user where db_bs.user.id=w1.creatuser) createusername,
-        (select db_bs.user.name from db_bs.user where db_bs.user.id=w1.enduser) endusername,
+        (select scrum.user.name from scrum.user where scrum.user.id=w1.creatuser) createusername,
+        (select scrum.user.name from scrum.user where scrum.user.id=w1.enduser) endusername,
         w1.des,
         (SELECT version.`status` from version where version.id=w1.version_id) versionstatus,
         CASE
@@ -54,7 +54,7 @@
         w1.endtime,
         w1.user_id userid
         FROM
-        db_bs.bug w1
+        scrum.bug w1
         WHERE
         <if test="userId!=null">
             w1.user_id = #{userId} and
@@ -72,7 +72,7 @@
         order by Gstatus,w1.createtime
     </select>
     <insert id="addBug">
-        insert into  db_bs.bug(id, version_id, user_id, creatuser, des, status, createtime)
+        insert into  scrum.bug(id, version_id, user_id, creatuser, des, status, createtime)
         values (REPLACE(UUID(), '-', ''),#{vId},#{userId},#{createUserId},#{des},0,now())
     </insert>
     <update id="updateBugStauts">

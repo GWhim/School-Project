@@ -11,12 +11,12 @@
     <result column="status" jdbcType="VARCHAR" property="status" />
   </resultMap>
   <select id="getWorkNumByUserId" resultType="int">
- select COUNT(user_id) from db_bs.work,db_bs.version where db_bs.`work`.status='1' and db_bs.`work`.user_id= #{userId}
- and db_bs.version.id=db_bs.`work`.version_id and  db_bs.version.`status`=1
+ select COUNT(user_id) from scrum.work,scrum.version where scrum.`work`.status='1' and scrum.`work`.user_id= #{userId}
+ and scrum.version.id=scrum.`work`.version_id and  scrum.version.`status`=1
  </select>
   <select id="getDoneWorkNumByUserId" resultType="int">
- select COUNT(user_id) from db_bs.work,db_bs.version where db_bs.`work`.status='2' and db_bs.`work`.user_id= #{userId} and TO_DAYS(db_bs.work.endtime) = TO_DAYS(now())
-  and db_bs.version.id=db_bs.`work`.version_id and  db_bs.version.`status`=1
+ select COUNT(user_id) from scrum.work,scrum.version where scrum.`work`.status='2' and scrum.`work`.user_id= #{userId} and TO_DAYS(scrum.work.endtime) = TO_DAYS(now())
+  and scrum.version.id=scrum.`work`.version_id and  scrum.version.`status`=1
      </select>
     <select id="getDoingWorkByUV" resultType="java.util.Map">
      SELECT
@@ -24,7 +24,7 @@
         w1.des,
         1 AS 'type'
     FROM
-        db_bs.WORK w1
+        scrum.WORK w1
     WHERE
         w1.user_id = #{userId}
         AND w1.version_id = #{versionId}
@@ -34,7 +34,7 @@
         b1.des,
         2 AS 'type'
     FROM
-        db_bs.bug b1
+        scrum.bug b1
     WHERE
         b1.user_id = #{userId}
         AND b1.version_id = #{versionId}
@@ -51,7 +51,7 @@
         </foreach>
     </update>
     <insert id="addworkbyzj" parameterType="com.ggg.bs.model.Work">
-        insert into db_bs.WORK(id, version_id, user_id, createuser_id, des, status, createtime)
+        insert into scrum.WORK(id, version_id, user_id, createuser_id, des, status, createtime)
         values(#{work.workId},#{work.versionId},#{toUserId},#{loginUserId},#{work.des},'1',now())
     </insert>
     <select id="toNewVersion" resultType="java.util.Map">
@@ -75,12 +75,12 @@
     <select id="getAllWorkByUser" resultType="java.util.Map">
     SELECT
     w1.id,
-    (SELECT db_bs.user.name from db_bs.user where db_bs.user.id=w1.user_id) username,
-    (select db_bs.project.name from db_bs.version,project where db_bs.version.id=w1.version_id and db_bs.project.id=db_bs.version.project_id) pname,
-    (select db_bs.version.name from db_bs.version where db_bs.version.id=w1.version_id) vname,
+    (SELECT scrum.user.name from scrum.user where scrum.user.id=w1.user_id) username,
+    (select scrum.project.name from scrum.version,project where scrum.version.id=w1.version_id and scrum.project.id=scrum.version.project_id) pname,
+    (select scrum.version.name from scrum.version where scrum.version.id=w1.version_id) vname,
     w1.version_id vId,
-    (select db_bs.user.name from db_bs.user where db_bs.user.id=w1.createuser_id) createusername,
-    (select db_bs.user.name from db_bs.user where db_bs.user.id=w1.enduser_id) endusername,
+    (select scrum.user.name from scrum.user where scrum.user.id=w1.createuser_id) createusername,
+    (select scrum.user.name from scrum.user where scrum.user.id=w1.enduser_id) endusername,
     w1.des,
     (SELECT version.`status` from version where version.id=w1.version_id) versionstatus,
     CASE
@@ -98,7 +98,7 @@
     w1.endtime,
     w1.user_id userid
     FROM
-    db_bs.WORK w1
+    scrum.WORK w1
     WHERE
     <if test="userId!=null">
     w1.user_id = #{userId} and
@@ -116,7 +116,7 @@
     order by Gstatus,w1.createtime
     </select>
     <insert id="addWork">
-        insert into  db_bs.WORK(id, version_id, user_id, createuser_id, des, status, createtime)
+        insert into  scrum.WORK(id, version_id, user_id, createuser_id, des, status, createtime)
         values (REPLACE(UUID(), '-', ''),#{vId},#{userId},#{createUserId},#{des},1,now())
     </insert>
     <update id="updateWorkStauts">

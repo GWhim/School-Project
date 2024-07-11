@@ -54,7 +54,7 @@ app.use('/admin', protectRoutesMiddleware, adminRoutes);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
-let port = process.env.PORT;
+let port = process.env.PORT2;
 
 db.connectToDatabase().then(function() {
     console.log('listen to', port)

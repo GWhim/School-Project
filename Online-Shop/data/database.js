@@ -2,7 +2,7 @@ const mongodb = require('mongodb');
 
 const Mongoclient = mongodb.MongoClient;
 
-let mongodbUrl = process.env.MONGODB_URL;
+let mongodbUrl = process.env.MONGODB_URL2;
 
 let database;
 

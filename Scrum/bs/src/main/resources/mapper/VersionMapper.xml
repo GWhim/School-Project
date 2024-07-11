@@ -12,11 +12,11 @@
     <result column="endtime" jdbcType="VARCHAR" property="endtime" />
   </resultMap>
   <select id="getVersionNumByUserId" resultType="int">
-  select COUNT(user_id) from db_bs.`team`
-  where db_bs.`team`.version_id in(SELECT db_bs.`version`.id from db_bs.`version` WHERE `status`=1)  and db_bs.`team`.user_id=#{userId} and team.sfyx=1
+  select COUNT(user_id) from scrum.`team`
+  where scrum.`team`.version_id in(SELECT scrum.`version`.id from scrum.`version` WHERE `status`=1)  and scrum.`team`.user_id=#{userId} and team.sfyx=1
      </select>
     <select id="getVersionById" resultMap="VersionBaseResultMap">
-    select * from db_bs.version where id=#{id}
+    select * from scrum.version where id=#{id}
      </select>
   <select id="getVersionByUserId" resultType="java.util.Map">
 	SELECT
@@ -44,10 +44,10 @@ WHERE
 
     <select id="getVersionByPId" resultType="java.util.Map">
     select version.id,version.name,version.createtime,
-    (select db_bs.user.name from  db_bs.user where db_bs.user.id= version.creatuser_id ) createName,
+    (select scrum.user.name from  scrum.user where scrum.user.id= version.creatuser_id ) createName,
     version.status,
 			FORMAT((select COUNT(work.id) FROM `work` WHERE `work`.version_id =version.id and work.`status`='2')/(select COUNT(work.id) FROM `work` WHERE `work`.version_id =version.id and (work.`status`='1' or work.`status`='2'))*100,2) worknum
-    from db_bs.version where version.project_id=#{pId}
+    from scrum.version where version.project_id=#{pId}
     ORDER BY status desc ,createtime
      </select>
     <update id="updateVersionStatus">

@@ -10,14 +10,14 @@
   </resultMap>
 
     <select id="getCzjlByUserId" resultMap="CzjlBaseResultMap">
-  select db_bs.czjl.username,db_bs.czjl.createtime,db_bs.czjl.des from db_bs.czjl
+  select scrum.czjl.username,scrum.czjl.createtime,scrum.czjl.des from scrum.czjl
       <where>
           user_id in (SELECT distinct team.user_id from team where team.version_id in(select t2.version_id from team t2 WHERE t2.user_id=#{userId}and t2.sfyx=1))
           <if test="type ==1">
-              and   TO_DAYS(db_bs.czjl.createtime) = TO_DAYS(now())
+              and   TO_DAYS(scrum.czjl.createtime) = TO_DAYS(now())
           </if>
           <if test="type ==2">
-              and YEARWEEK(db_bs.czjl.createtime) = YEARWEEK(NOW())
+              and YEARWEEK(scrum.czjl.createtime) = YEARWEEK(NOW())
           </if>
       </where>
   ORDER BY  createtime desc

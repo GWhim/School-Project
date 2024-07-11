@@ -31,45 +31,45 @@
       SELECT
       COUNT( user_id )
       FROM
-      db_bs.bug
+      scrum.bug
       WHERE
       bug_id IS NULL
-      AND db_bs.bug.user_id = u1.id
-      AND v1.id = db_bs.bug.version_id
-      AND db_bs.bug.`status`&lt;&gt;3
-      AND db_bs.bug.`status`&lt;&gt;2
+      AND scrum.bug.user_id = u1.id
+      AND v1.id = scrum.bug.version_id
+      AND scrum.bug.`status`&lt;&gt;3
+      AND scrum.bug.`status`&lt;&gt;2
       ) bugnum,
       (
       SELECT
       COUNT( user_id )
       FROM
-      db_bs.bug
+      scrum.bug
       WHERE
       bug_id IS NULL
-      AND db_bs.bug.STATUS = 1
-      AND db_bs.bug.user_id = u1.id
-      AND v1.id = db_bs.bug.version_id
+      AND scrum.bug.STATUS = 1
+      AND scrum.bug.user_id = u1.id
+      AND v1.id = scrum.bug.version_id
       ) donebugnum,
       (
       SELECT
       COUNT( user_id )
       FROM
-      db_bs.WORK
+      scrum.WORK
       WHERE
-      db_bs.WORK.user_id = u1.id
-      AND v1.id = db_bs.WORK.version_id
-      AND db_bs.WORK.`status`&lt;&gt;'0'
-      AND db_bs.WORK.`status`&lt;&gt;'3'
+      scrum.WORK.user_id = u1.id
+      AND v1.id = scrum.WORK.version_id
+      AND scrum.WORK.`status`&lt;&gt;'0'
+      AND scrum.WORK.`status`&lt;&gt;'3'
       ) worknum,
       (
       SELECT
       COUNT( user_id )
       FROM
-      db_bs.WORK
+      scrum.WORK
       WHERE
-      db_bs.`work`.STATUS = '2'
-      AND db_bs.WORK.user_id = u1.id
-      AND v1.id = db_bs.WORK.version_id
+      scrum.`work`.STATUS = '2'
+      AND scrum.WORK.user_id = u1.id
+      AND v1.id = scrum.WORK.version_id
       ) doneworknum
       FROM
       USER u1,

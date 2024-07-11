@@ -14,11 +14,11 @@ test_item.endtime,test_item.des,test_item.title
      from test_item where test_item.test_id=#{testId}
   </select>
     <insert id="insertTestItem" >
-        insert into db_bs.test_item(id,version_id,createuser_id,createtime,status,enduser_id,endtime,des,test_id,title)
+        insert into scrum.test_item(id,version_id,createuser_id,createtime,status,enduser_id,endtime,des,test_id,title)
         values (REPLACE(UUID(), '-', ''),#{vId},#{uId},now(),1,'',null,#{textarea},#{testId},#{cstmtitle})
     </insert>
     <update id="updateTestItemStatus">
-        update db_bs.test_item set test_item.status=#{status}
+        update scrum.test_item set test_item.status=#{status}
         <if test="userId!=null">
             ,test_item.enduser_id=#{userId}
             ,test_item.endtime=now()

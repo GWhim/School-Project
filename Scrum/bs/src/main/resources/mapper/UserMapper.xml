@@ -10,10 +10,10 @@
     <result column="status" jdbcType="VARCHAR" property="status" />
   </resultMap>
   <select id="getUserList" resultMap="UserBaseResultMap">
-    select * from db_bs.user
+    select * from scrum.user
   </select>
   <select id="getUserByUserAccountAndPassword" resultMap="UserBaseResultMap">
-select * from db_bs.user
+select * from scrum.user
 <where>
     <if test="account !='' and account != null and pwd!='' and pwd != null ">
       and   account = #{account}
@@ -22,7 +22,7 @@ select * from db_bs.user
 </where>
   </select>
   <select id="getUserById" resultMap="UserBaseResultMap">
-    select * from db_bs.user
+    select * from scrum.user
     <where>
       <if test="account !='' and account != null and pwd!='' and pwd != null ">
         and   id = #{id}
@@ -31,57 +31,57 @@ select * from db_bs.user
   </select>
   <select id="getAllUser" resultType="java.util.Map">
     select
-    db_bs.user.id,
-    db_bs.user.name,
+    scrum.user.id,
+    scrum.user.name,
      CASE
-      WHEN db_bs.user.identity = '1' THEN
+      WHEN scrum.user.identity = '1' THEN
       '项目经理'
-      WHEN db_bs.user.identity = '2' THEN
+      WHEN scrum.user.identity = '2' THEN
       '需求'
-      WHEN db_bs.user.identity = '3' THEN
+      WHEN scrum.user.identity = '3' THEN
       '开发'
-      WHEN db_bs.user.identity = '4' THEN
+      WHEN scrum.user.identity = '4' THEN
       '测试' ELSE 'GGG'
       END identity
-     from db_bs.user
-     where db_bs.user.id not in (select team.user_id from team where team.version_id=#{versionId} and team.sfyx=1)
+     from scrum.user
+     where scrum.user.id not in (select team.user_id from team where team.version_id=#{versionId} and team.sfyx=1)
   </select>
     <select id="getAllVUser" resultType="java.util.Map">
     select
-    db_bs.user.id,
-    db_bs.user.name,
+    scrum.user.id,
+    scrum.user.name,
      CASE
-      WHEN db_bs.user.identity = '1' THEN
+      WHEN scrum.user.identity = '1' THEN
       '项目经理'
-      WHEN db_bs.user.identity = '2' THEN
+      WHEN scrum.user.identity = '2' THEN
       '需求'
-      WHEN db_bs.user.identity = '3' THEN
+      WHEN scrum.user.identity = '3' THEN
       '开发'
-      WHEN db_bs.user.identity = '4' THEN
+      WHEN scrum.user.identity = '4' THEN
       '测试' ELSE 'GGG'
       END identity
-     from db_bs.user
-     where db_bs.user.id in (select team.user_id from team where team.version_id=#{versionId} and team.sfyx=1)
+     from scrum.user
+     where scrum.user.id in (select team.user_id from team where team.version_id=#{versionId} and team.sfyx=1)
   </select>
     <select id="getAllUserByPId" resultType="java.util.Map">
     SELECT
-	db_bs.USER.id,
-	db_bs.USER.NAME,
+	scrum.USER.id,
+	scrum.USER.NAME,
 CASE
 
-		WHEN db_bs.USER.identity = '1' THEN
+		WHEN scrum.USER.identity = '1' THEN
 		'项目经理'
-		WHEN db_bs.USER.identity = '2' THEN
+		WHEN scrum.USER.identity = '2' THEN
 		'需求'
-		WHEN db_bs.USER.identity = '3' THEN
+		WHEN scrum.USER.identity = '3' THEN
 		'开发'
-		WHEN db_bs.USER.identity = '4' THEN
+		WHEN scrum.USER.identity = '4' THEN
 		'测试' ELSE 'GGG'
 	END identity
 FROM
-	db_bs.USER
+	scrum.USER
 WHERE
-	db_bs.USER.id IN (
+	scrum.USER.id IN (
 	SELECT
 		team.user_id
 	FROM
@@ -91,7 +91,7 @@ WHERE
 	AND team.sfyx = 1)
   </select>
   <update id="UpdateUserPwdById" >
-    update  db_bs.user
+    update  scrum.user
     SET pwd = #{pwd}
     <where>  id = #{id}
     </where>

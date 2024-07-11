@@ -14,11 +14,11 @@ demand_item.endtime,demand_item.des,demand_item.title
      from demand_item where demand_item.demand_id=#{demandId}
   </select>
     <insert id="insertDemandItem" >
-        insert into db_bs.demand_item(id,version_id,createuser_id,createtime,status,enduser_id,endtime,des,demand_id,title)
+        insert into scrum.demand_item(id,version_id,createuser_id,createtime,status,enduser_id,endtime,des,demand_id,title)
         values (REPLACE(UUID(), '-', ''),#{vId},#{uId},now(),1,'',null,#{textarea},#{demandId},#{xqtmtitle})
     </insert>
     <update id="updateDemandItemStatus">
-        update db_bs.demand_item set demand_item.status=#{status}
+        update scrum.demand_item set demand_item.status=#{status}
         <if test="userId!=null">
             ,demand_item.enduser_id=#{userId}
             ,demand_item.endtime=now()

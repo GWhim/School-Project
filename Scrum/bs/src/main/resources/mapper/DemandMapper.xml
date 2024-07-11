@@ -8,10 +8,10 @@
 
   </resultMap>
   <select id="getDemandByUV" resultMap="DemandBaseResultMap">
-    select * from db_bs.demand where db_bs.demand.version_id=#{vId}
+    select * from scrum.demand where scrum.demand.version_id=#{vId}
   </select>
     <insert id="insertDemand" >
-        insert into db_bs.demand(id,file_id,version_id)
+        insert into scrum.demand(id,file_id,version_id)
         values (REPLACE(UUID(), '-', ''),#{fId},#{vId})
     </insert>
 

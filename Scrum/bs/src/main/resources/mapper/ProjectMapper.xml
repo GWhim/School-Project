@@ -13,10 +13,10 @@
 
   <select id="kbProject" resultType="java.util.Map">
 	select project.`name` projectname ,v1.`name` versionname
-,(select  COUNT(user_id)from db_bs.work where db_bs.`work`.status='1'and db_bs.`work`.user_id=#{userId} and v1.id=db_bs.`work`.version_id) worknum
-,(select  COUNT(user_id)from db_bs.work where db_bs.`work`.status='2'and db_bs.`work`.user_id=#{userId} and v1.id=db_bs.`work`.version_id) doneworknum
-,(select COUNT(user_id) from db_bs.bug WHERE bug_id is null and db_bs.bug.status=0 and db_bs.bug.user_id= #{userId} and v1.id=db_bs.bug.version_id) bugnum
-,(select COUNT(user_id) from db_bs.bug WHERE bug_id is null and db_bs.bug.status=1 and db_bs.bug.user_id= #{userId} and v1.id=db_bs.bug.version_id) donebugnum
+,(select  COUNT(user_id)from scrum.work where scrum.`work`.status='1'and scrum.`work`.user_id=#{userId} and v1.id=scrum.`work`.version_id) worknum
+,(select  COUNT(user_id)from scrum.work where scrum.`work`.status='2'and scrum.`work`.user_id=#{userId} and v1.id=scrum.`work`.version_id) doneworknum
+,(select COUNT(user_id) from scrum.bug WHERE bug_id is null and scrum.bug.status=0 and scrum.bug.user_id= #{userId} and v1.id=scrum.bug.version_id) bugnum
+,(select COUNT(user_id) from scrum.bug WHERE bug_id is null and scrum.bug.status=1 and scrum.bug.user_id= #{userId} and v1.id=scrum.bug.version_id) donebugnum
 	 from project,version v1
 	where
 	v1.id in  (SELECT distinct team.version_id from team where team.user_id=#{userId} and team.sfyx=1)

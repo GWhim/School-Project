@@ -51,11 +51,11 @@ app.use('/admin', require('./routers/admin'));
 app.use('/api', require('./routers/api'));
 
 //mongodb数据库连接
-mongoose.connect(process.env.MONGODB_URL, function (err) {
+mongoose.connect(process.env.MONGODB_URL1, function (err) {
     if (err) {
         console.log('数据库连接失败');
     } else {
         console.log('数据库连接成功');
-        app.listen(3000);
+        app.listen(process.env.PORT1);
     }
 });

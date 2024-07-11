@@ -8,10 +8,10 @@
 
   </resultMap>
   <select id="getTestByUV" resultMap="TestBaseResultMap">
-    select * from db_bs.test where db_bs.test.version_id=#{vId}
+    select * from scrum.test where scrum.test.version_id=#{vId}
   </select>
     <insert id="insertTest" >
-        insert into db_bs.test(id,file_id,version_id)
+        insert into scrum.test(id,file_id,version_id)
         values (REPLACE(UUID(), '-', ''),#{fId},#{vId})
     </insert>
 

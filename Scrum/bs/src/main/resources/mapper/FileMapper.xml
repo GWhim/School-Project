@@ -12,27 +12,27 @@
     <result column="version_id" jdbcType="VARCHAR" property="versionId" />
   </resultMap>
   <select id="getFlieByUV" resultType="java.util.Map">
-    select (select version.name from version where version.id=db_bs.file.version_id) vName,
-    (select user.name from db_bs.user where user.id=file.user_id) userName,
-    db_bs.file.name,
-    db_bs.file.id,
-    db_bs.file.createtime,
+    select (select version.name from version where version.id=scrum.file.version_id) vName,
+    (select user.name from scrum.user where user.id=file.user_id) userName,
+    scrum.file.name,
+    scrum.file.id,
+    scrum.file.createtime,
     (select demand.id from demand where demand.file_id=file.id) demandId
-     from db_bs.file where db_bs.file.version_id in (select version.id from version where version.project_id =
-    (select version.project_id from version where version.id=#{vId})) and file.type=#{type} order by db_bs.file.createtime desc
+     from scrum.file where scrum.file.version_id in (select version.id from version where version.project_id =
+    (select version.project_id from version where version.id=#{vId})) and file.type=#{type} order by scrum.file.createtime desc
   </select>
   <select id="getCsFlieByUV" resultType="java.util.Map">
-    select (select version.name from version where version.id=db_bs.file.version_id) vName,
-    (select user.name from db_bs.user where user.id=file.user_id) userName,
-    db_bs.file.name,
-    db_bs.file.id,
-    db_bs.file.createtime,
+    select (select version.name from version where version.id=scrum.file.version_id) vName,
+    (select user.name from scrum.user where user.id=file.user_id) userName,
+    scrum.file.name,
+    scrum.file.id,
+    scrum.file.createtime,
     (select test.id from test where test.file_id=file.id) testId
-     from db_bs.file where db_bs.file.version_id in (select version.id from version where version.project_id =
-    (select version.project_id from version where version.id=#{vId})) and file.type=#{type} order by db_bs.file.createtime desc
+     from scrum.file where scrum.file.version_id in (select version.id from version where version.project_id =
+    (select version.project_id from version where version.id=#{vId})) and file.type=#{type} order by scrum.file.createtime desc
   </select>
     <insert id="insertFile" parameterType="com.ggg.bs.model.File" >
-        insert into db_bs.file(id,name,orthername,path,user_id,type,createtime,version_id)
+        insert into scrum.file(id,name,orthername,path,user_id,type,createtime,version_id)
         values (#{File.id},#{File.name},#{File.path},#{File.userId},#{File.type},#{File.createtime},#{File.versionId})
     </insert>
   <select id="getFlieById" resultMap="FileBaseResultMap">

@@ -1,4 +1,3 @@
-const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 const Order = require("../models/order.model");
 const User = require("../models/user.model");
