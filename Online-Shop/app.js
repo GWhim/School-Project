@@ -26,9 +26,13 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
-app.use(express.static('public'));
-app.use('/products/assets', express.static('product-data'));
+if(process.env.staticPath){
+    app.use(express.static(`${process.env.staticPath2}/public`));
+    app.use('/products/assets', express.static(`${process.env.staticPath2}/product-data`));
+}else{
+    app.use(express.static(`public`));
+    app.use('/products/assets', express.static(`product-data`));
+}
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
